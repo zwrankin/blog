@@ -1,1 +1,8 @@
-energy_usage_forecasting/data*
+
+*.DS_Store
+*__pycache__
+*.ipynb_checkpoints
+
+# Raw Data (can be downloaded as per instructions in each repo
+energy_usage_forecasting/data/raw*
+tree_canopy_cover/data/raw*
