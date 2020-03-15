@@ -1,4 +1,6 @@
 import numpy as np
+import seaborn as sns
+import folium
 import geopandas as gpd
 import rasterio
 from rasterio import warp
@@ -24,7 +26,7 @@ class TreeCanopyCover:
             self.transform_window = self.src.transform
             self.band = self.src.read(1)    
         else: 
-            raise UserWarning('there are bugs in windowed reading!')
+            logging.warn('there are bugs in windowed transformation!')
             self.transform_window = windows.transform(self.window,self.src.transform)
             self.band = self.src.read(1, window=self.window)
         
@@ -70,7 +72,12 @@ class TreeCanopyCover:
         return out_array
     
     def to_gpdf(self):
-        to_gpdf(self.array[0], self.transform)
+        gpdf = to_gpdf(self.array[0], self.transform)
+        return gpdf
+
+    def to_map(self):
+        m = map_tcc(self.array[0], self.transform)
+        return m
 
     def save_tif(self, filepath):
         profile = self.src.profile
@@ -109,7 +116,43 @@ def to_gpdf(array: np.array, transform: affine.Affine):
     gpdf = gpdf.reset_index()
     return gpdf
 
+def map_tcc(array: np.array, transform: affine.Affine):
+    CENTER = (45, -100)
+    m = folium.Map(location=CENTER,
+                tiles='cartodbpositron',  # a "cleaner" base map
+                    zoom_start=4)
+
+    # Use the affine transformation to define the raster bounds in lat/long coords
+    bounds_trans = (transform.c,
+                transform.f + transform.e*array.shape[0],
+                transform.c + transform.a*array.shape[1],
+                transform.f)
+
+    pal = sns.color_palette('Greens', n_colors=11)
+    pal_rbg = []
+    for t in pal:
+        pal_rbg += [(t[0]*255, t[1]*255, t[2]*255)]
+        
+    def colorfun(x):
+        if x > 100: 
+            x = 0 # topcode since missingness is 255
+        return pal_rbg[int(x/10)]
+
+    image_overlay = folium.raster_layers.ImageOverlay(array,
+                                                  [[bounds_trans[1],
+                                                    bounds_trans[0]],
+                                                   [bounds_trans[3],
+                                                    bounds_trans[2]]], 
+                                                  colormap=colorfun,
+                                                  opacity=0.6, 
+                                                  name='Tree Cover Canopy',
+                                                  mercator_project=True)
+
+    m.add_child(image_overlay)
+    return m
+
 def save_tif_files():
+    logging.warn('This will take lots of RAM')
     tcc = TreeCanopyCover('data/raw/usfs_2016_CONUS_canopy_analytical_12-14-2018_u8.img', resolution=0.1)
     tcc.save_tif('data/tcc_10km_resolution.tif')
     tcc = TreeCanopyCover('data/raw/usfs_2016_CONUS_canopy_analytical_12-14-2018_u8.img', resolution=0.01)
