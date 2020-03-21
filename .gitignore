@@ -1,1 +1,6 @@
+*__pycache__*
+*.ipynb_checkpoints*
+.DS_Store
+
 energy_usage_forecasting/data*
+fitbit/SECRETS.env
