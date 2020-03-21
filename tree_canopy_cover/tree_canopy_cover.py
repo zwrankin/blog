@@ -7,6 +7,7 @@ from rasterio import warp
 from rasterio import windows
 import affine
 from shapely.geometry import Polygon
+import plotly.graph_objects as go
 import logging
 
 
@@ -116,6 +117,7 @@ def to_gpdf(array: np.array, transform: affine.Affine):
     gpdf = gpdf.reset_index()
     return gpdf
 
+
 def map_tcc(array: np.array, transform: affine.Affine):
     CENTER = (45, -100)
     m = folium.Map(location=CENTER,
@@ -150,6 +152,63 @@ def map_tcc(array: np.array, transform: affine.Affine):
 
     m.add_child(image_overlay)
     return m
+
+
+def aggregate_tcc(polygon, tolerance=0.1):
+    # 10X speedup for tolerance 0.1
+    polygon = polygon.simplify(tolerance)
+    
+    # crude selection of tcc
+    x_min, y_min, x_max, y_max = polygon.bounds
+    df_tcc = gpdf.loc[gpdf.latitude.between(y_min, y_max) & 
+                      gpdf.longitude.between(x_min, x_max)]
+    
+    # Aggregate TCC within polygon
+    try: 
+        tcc_polygon = df_tcc.loc[df_tcc.centroid.within(polygon)]
+        return tcc_polygon.tcc.mean()
+    # for the 1km resolution (but NOT the 10km resolution), getting TopologyException
+    # internet suggests self-intersecting polygons? 
+    except: 
+        return np.NaN
+
+
+def scatter_tcc_by_city(df_city: gpd.GeoDataFrame):
+    data = df_city
+
+    data['size'] = data['POP2010'] / data['POP2010'].max() * 100
+
+    cities_to_label=['New York', 'Miami', 'Boston', 'Raleigh', 'Nashville', 'San Francisco', 'Atlanta', 
+                    'Phoenix', 'Los Angeles', 'Chicago', 'Washington', 'Seattle']
+    d = data.loc[~data.NAME.isin(cities_to_label)]
+    fig = go.Figure(data=go.Scatter(
+        x=d['population_density'],
+        y=d['tcc'],
+        mode='markers',
+        marker=dict(size=d['size'],
+                    color=d['tcc'],
+                   colorscale='YlGn'),
+        text=d['NAME'],
+    ))
+
+    d = data.loc[data.NAME.isin(cities_to_label)]
+    fig.add_trace(go.Scatter(
+        x=d['population_density'],
+        y=d['tcc'],
+        mode='markers+text',
+        marker=dict(size=d['size'],
+                    color=d['tcc'],
+                   colorscale='YlGn'),
+        text=d['NAME'],
+        textposition="top center"
+    ))
+
+
+    fig.update_layout(title='Tree Cover Canopy for Major US Cities',
+                      xaxis_title='Population Density (people per square mile)  |  Bubble size is population', yaxis_title='Tree Cover Canopy (%)',
+                     showlegend=False)
+    return fig
+
 
 def save_tif_files():
     logging.warn('This will take lots of RAM')
