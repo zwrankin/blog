@@ -1,0 +1,6 @@
+pandas
+jupyter
+plotly
+cherrypy
+statsmodels
+fbprophet
