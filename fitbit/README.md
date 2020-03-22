@@ -55,3 +55,7 @@ df = pd.DataFrame(data['activities-heart-intraday']['dataset'])
 ```
 
 There may be a sleeker way achieve authentication using the [FitbitOauth2Client](https://github.com/orcasgit/python-fitbit/blob/master/fitbit/api.py#L20), but the [client docs](https://python-fitbit.readthedocs.io/en/latest/) are somewhat slim and mention the `gather_keys_oauth2.py` module to get the access_token. 
+
+
+## Data Notes
+As of 3/22/2020, I am not publishing my raw fitbit data.
