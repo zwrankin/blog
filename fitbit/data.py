@@ -2,6 +2,15 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
+def add_date_vars(df):
+    df['weekday_name'] = df['date_time'].dt.strftime('%A')
+    df['is_weekend'] = df['weekday_name'].isin(['Saturday', 'Sunday'])
+    df['weekend_dummy'] = (df['is_weekend']).astype(int)
+    df.loc[df['is_weekend'], 'day_type'] = 'Weekend'
+    df.loc[~df['is_weekend'], 'day_type'] = 'Weekday'
+    df['date'] = df['date_time'].dt.strftime('%D')  # '%Y-%m-%d'
+    df['date_desc'] = df['date_time'].dt.strftime('%A %B %d')  # '%A %D'
+    return df 
 
 def get_daily_summary_df(client, date_str: str):
     data = client.activities(date=date_str)
@@ -48,6 +57,7 @@ def get_intraday_heart_df(client, date_str: str):
     data = client.intraday_time_series('activities/heart', base_date=date_str)
     df = pd.DataFrame(data['activities-heart-intraday']['dataset'])
     df['date_time'] = date_str + ' ' + df['time']  # time doesnt inlcude date
+    df['date_time'] = pd.to_datetime(df['date_time'])
     df['metric'] = 'heart_rate'
     return df
 
@@ -69,10 +79,9 @@ def make_datasets(client, start_date: datetime, end_date: datetime):
         
     df_daily = pd.concat(df_daily_list)
     # TODO - reshape df_daily wide? 
-    df_daily['is_weekend'] = df_daily['date_time'].dt.weekday > 4
-        
+    df_daily = add_date_vars(df_daily)
+    
     df_intraday = pd.concat(df_intraday_list)
-    df_intraday['date_time'] = pd.to_datetime(df_intraday['date_time'])
-    df_intraday['is_weekend'] = df_intraday['date_time'].dt.weekday > 4
+    df_intraday = add_date_vars(df_intraday)
     
     return df_daily, df_intraday
