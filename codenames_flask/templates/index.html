@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Wordcount</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      .container {
+        max-width: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form action="{{ url_for('predict')}}" method="POST">
+        <h2>Codenames word list generator</h2>
+        <p>Using a "corpus" (large body of text), this will generate a list of words you can use for your custom codenames game at horsepaste.com</p>
+        <p>For example, you could use https://www.gutenberg.org to use the text from Romeo and Juliet (https://www.gutenberg.org/) to return "ROMEO, THOU, JULIET, THY, CAPULET, NURSE" and 94 other words</p>
+
+        <textarea name="message" rows="10" cols="80" placeholder="Copy+paste your text here"></textarea>
+        <br/>
+
+        <input type="submit" class="btn btn-default" value="Submit">
+        <p>Note: your clipboard has a ~1 million character limit. For reference, Romeo and Juliet is ~150,000 characters</p>
+        
+      </form>
+
+      <br>
+      {% for error in errors %}
+        <h4>{{ error }}</h4>
+      {% endfor %}
+    </div>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </body>
+</html>
