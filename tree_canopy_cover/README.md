@@ -2,9 +2,9 @@
 This blog is somewhat perpetually "in progress." As of March 26, I'm pushing it to master with some initial plots.  I hope to write more in-depth analysis soon. The draft blog post can be found at:  http://zanerankin.com/blog/tree-canopy-cover/
 
 
-Initial work included making interactive plots of TCC, the interactive version of which can be found at https://zanerankin.com/tcc/tree_canopy_cover/output/map_tcc_usa_1km_city_overlay.html. 
+Initial work included making interactive plots of TCC, the interactive version of which can be found at https://zanerankin.com/blog/tree_canopy_cover/output/map_tcc_usa_1km_city_overlay.html. 
 ![](images/tcc_map_preview.png) 
-Additionally, I aggregated TCC by metropolitan area to determine which cities (and eventually, neighborhoods) had the most tree cover. The interactive version of the plot can be found at https://zanerankin.com/tcc/tree_canopy_cover/output/tcc_by_city_scatter.html. 
+Additionally, I aggregated TCC by metropolitan area to determine which cities (and eventually, neighborhoods) had the most tree cover. The interactive version of the plot can be found at https://zanerankin.com/blog/tree_canopy_cover/output/tcc_by_city_scatter.html. 
 ![](images/tcc_scatter_preview.png). 
 
 ## Data 
