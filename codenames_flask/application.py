@@ -3,12 +3,16 @@ from flask import request
 from flask import render_template
 application = Flask(__name__)
 
-
-# NLTK requires nltk.download('stopwords') which may complicate deployment - easier to add another pip dep
+# This is necessary so that the EC2 instance downloads the NLTK punctuation (for tokenizing)
+import nltk
+nltk.data.path.append("/tmp")
+nltk.download("punkt", download_dir = "/tmp")
+# TODO - perhaps add nltk.download('stopwords') and use that rather than stop_words package
 # from nltk.corpus import stopwords 
 # stopwords = [s.upper() for s in stopwords.words('english')]
 from stop_words import get_stop_words
 stopwords = get_stop_words('english')
+
 from nltk.tokenize import word_tokenize 
 from nltk.probability import FreqDist
 import re 
@@ -33,15 +37,15 @@ def corpus_to_word_list(corpus, n=200):
 def home():
 	return render_template('index.html')
 
-
-@application.route('/predict',methods=['POST'])
+@application.route('/predict', methods=['POST', 'GET'])
 def predict():
 	if request.method == 'POST':
 		message = request.form['message']
 		out = corpus_to_word_list(message)
-	return render_template('output.html', prediction = out) 
-
-
+		return render_template('output.html', prediction = out) 
+	else: 
+		return render_template('index.html')
+		
 if __name__ == '__main__':
-	# app.run(debug=True)
+	# application.run(debug=True)  # local dev
 	application.run(host="0.0.0.0")
