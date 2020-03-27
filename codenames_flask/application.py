@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import render_template
-app = Flask(__name__)
+application = Flask(__name__)
 
 
 # NLTK requires nltk.download('stopwords') which may complicate deployment - easier to add another pip dep
@@ -29,12 +29,12 @@ def corpus_to_word_list(corpus, n=200):
 	f_list = [i[0] for i in f.most_common(n)]
 	return ', '.join(f_list)
 
-@app.route('/')
+@application.route('/')
 def home():
 	return render_template('index.html')
 
 
-@app.route('/predict',methods=['POST'])
+@application.route('/predict',methods=['POST'])
 def predict():
 	if request.method == 'POST':
 		message = request.form['message']
@@ -43,4 +43,5 @@ def predict():
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	# app.run(debug=True)
+	application.run(host="0.0.0.0")
