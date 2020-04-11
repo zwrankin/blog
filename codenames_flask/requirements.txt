@@ -1,0 +1,10 @@
+certifi==2019.11.28
+click==7.1.1
+Flask==1.0.2
+itsdangerous==1.1.0
+Jinja2==2.11.1
+MarkupSafe==1.1.1
+nltk==3.4.5
+six==1.14.0
+stop-words==2018.7.23
+Werkzeug==1.0.0
