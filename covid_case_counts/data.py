@@ -20,8 +20,8 @@ def load_cases_by_onset():
     files = glob(DATA_DIR + '/raw/us-cases-epi-chart-*.json')
     for f in files: 
         df = load_json_data(f)
-        # can get date from filepath or last date in data 
-        df['report_date'] = df['date_time'].max()
+        # Warning - the last date in data is NOT always the report date 
+        df['report_date'] = pd.to_datetime(f[-15:-5])
         dfs += [df]
 
     return pd.concat(dfs)  
