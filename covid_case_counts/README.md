@@ -4,8 +4,10 @@ The CDC chart shows cases by onset, stating that cases in the last 11 days are n
 ![](images/cdc_epi_chart_2020_04_02.png)  
 However, I have observed that newly reported cases are from further back than the 11 day window, likely due to the combination of incubation period, testing delay, and reporting delay. 
 ![](images/epi_chart_Apr2_Apr9.png)
-Indeed, the median delay of new cases reported April 9 was 14 days, with 58% of cases with onset dates over 11 days in the past.   
+Indeed, the median delay of new cases reported April 9 was 11 days, with many cases taking 2-3 weeks from illness onset to reporting.   
 ![](images/delay_histogram.png)
+Here is a plot looking at how March case totals continue increasing well into April. 
+![](images/epi_chart_by_day.png)
 
 ## Data
 Data was scraped from the underlying data for the charts on https://www.cdc.gov/coronavirus/2019-ncov/cases-in-us.html.  
