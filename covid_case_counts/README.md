@@ -8,6 +8,9 @@ Indeed, the median delay of new cases reported April 9 was 11 days, with many ca
 ![](images/delay_histogram.png)
 Here is a plot looking at how March case totals continue increasing well into April. 
 ![](images/epi_chart_by_day.png)
+Using the cumulative distribution of reporting delays, you can approximate the final number of cases contracted in March. 
+![](images/epi_chart_by_day_total.png)
+
 
 ## Data
 Data was scraped from the underlying data for the charts on https://www.cdc.gov/coronavirus/2019-ncov/cases-in-us.html.  
